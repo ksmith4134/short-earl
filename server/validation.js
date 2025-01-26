@@ -9,10 +9,9 @@ export const UrlFormSchema = z.object({
     .optional()
 });
 
-export const userEmailSchema = z.object({
+export const searchEmailSchema = z.object({
   email: z
     .string()
-    .email('Please enter a valid email')
     .trim()
     .optional()
 });

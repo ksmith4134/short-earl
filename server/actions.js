@@ -1,6 +1,6 @@
 'use server';
 
-import { UrlFormSchema, userEmailSchema } from './validation';
+import { UrlFormSchema, searchEmailSchema } from './validation';
 import { query } from '@/database/db';
 import { createSlug, createNewHash } from './utils';
 
@@ -61,11 +61,15 @@ export async function createSlugAction(_state, formData) {
 
 }
 
-export async function getAllUserUrlsAction(_state, formData) {
-  const validatedFields = userEmailSchema.safeParse({
-    email: formData.get('email'),
-  });
+export async function getAllUserUrls(unsafeEmail) {
 
+  if (!unsafeEmail) {
+    return [];
+  }
+
+  const validatedFields = searchEmailSchema.safeParse({
+    email: unsafeEmail,
+  });
 
   if (!validatedFields.success) {
     return {
@@ -74,57 +78,113 @@ export async function getAllUserUrlsAction(_state, formData) {
   }
 
   const { email } = validatedFields.data;
-  console.log('email', email)
 
   try {
     const getUserUrls = await query(`
-      SELECT slugs.url, slugs.slug_id
+      SELECT slugs.url, slugs.slug_id, slugs.slug_hash
       FROM slugs
       INNER JOIN users ON slugs.user_id = users.user_id
-      WHERE users.email = $1;`, 
+      WHERE users.email = $1;`,
       [email]
     );
-    console.log('action', getUserUrls)
 
-    return {
-      success: true,
-      message: '',
-      body: {
-        urls: getUserUrls?.rows,
-        email,
-      },
+    if (getUserUrls.rowCount === 0) {
+      return [];
     }
+
+    return getUserUrls?.rows;
 
   } catch (error) {
-    return {
-      success: false,
-      message: error?.message || `An error occurred while retrieving user\'s URLs.`,
-    }
+    console.error(`An error occurred while retrieving user\'s URLs.`);
+    throw new Error(`An error occurred while retrieving user\'s URLs.`);
   }
 }
 
 export async function getUrlStats(slugId) {
-try {
-  const result = await query(`SELECT logging_id, browser, os, device, cpu FROM logging WHERE slug_id = $1`, [slugId]);
+  try {
+    // const result = await query(`SELECT logging_id, browser, os, device, cpu FROM logging WHERE slug_id = $1`, [slugId]);
 
-  if (result.rowCount === 0) {
-    return {
-      success: false,
-      message: 'No statistics are currently available for this URL.'
+    const result = await query(
+      `SELECT COUNT(*) AS total
+      FROM logging
+      WHERE slug_id = $1;`, 
+      [slugId]
+    );
+
+
+    if (result.rowCount === 0) {
+      return [];
     }
-  }
 
-  return {
-    success: true,
-    body: {
-      logs: result.rows,
-    }
-  }
+    return result.rows;
 
-} catch (error) {
-  return {
-    success: false,
-    message: 'No statistics are currently available for this URL.'
+  } catch (error) {
+    console.error('No statistics are currently available for this URL.');
+    throw new Error('No statistics are currently available for this URL.');
   }
 }
+
+export async function getBrowserTotals(slugId) {
+  try {
+    const result = await query(
+      `SELECT 
+      CASE 
+        WHEN browser = 'Chrome' THEN 'Chrome'
+        WHEN browser = 'Edge' THEN 'Edge'
+        WHEN browser = 'Firefox' THEN 'Firefox'
+        WHEN browser = 'Safari' THEN 'Safari'
+        ELSE 'Other'
+      END AS category,
+      COUNT(*) AS total
+      FROM logging
+      WHERE slug_id = $1
+      GROUP BY category
+      ORDER BY category ASC;`,
+      [slugId]
+    );
+
+    if (result.rowCount === 0) {
+      return [];
+    }
+
+    return result.rows;
+
+  } catch (error) {
+    console.error('No statistics are currently available for this URL.');
+    throw new Error('No statistics are currently available for this URL.');
+  }
+}
+
+export async function getOsTotals(slugId) {
+  try {
+    const result = await query(
+      `SELECT 
+      CASE 
+        WHEN os = 'Windows' THEN 'Windows'
+        WHEN os = 'macOS' THEN 'macOS'
+        WHEN os = 'Linux' THEN 'Linux'
+        WHEN os = 'iOS' THEN 'iOS'
+        WHEN os = 'Android' THEN 'Android'
+        WHEN os = 'ChromeOS' THEN 'ChromeOS'
+        WHEN os = 'iPadOS' THEN 'iPadOS'
+        ELSE 'Other'
+      END AS category,
+      COUNT(*) AS total
+      FROM logging
+      WHERE slug_id = $1
+      GROUP BY category
+      ORDER BY total DESC;`,
+      [slugId]
+    );
+
+    if (result.rowCount === 0) {
+      return [];
+    }
+
+    return result.rows;
+
+  } catch (error) {
+    console.error('No statistics are currently available for this URL.');
+    throw new Error('No statistics are currently available for this URL.');
+  }
 }
