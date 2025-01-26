@@ -15,18 +15,14 @@ export default async function URLStatsPage(props) {
 
   const [totalClicks, browserTotals, osTotals] = await Promise.all([getUrlStats(slugId), getBrowserTotals(slugId), getOsTotals(slugId)])
 
-  console.log('Totals', totalClicks);
-  console.log('Browser Stats', browserTotals);
-  console.log('OS Stats', osTotals);
-
   return (
-    <main className="p-8 sm:p-16 font-[family-name:var(--font-geist-sans)] max-w-3xl">
+    <main className="p-8 sm:p-16 font-[family-name:var(--font-geist-sans)] max-w-xl">
       <div className="flex gap-4">
         <Link href={`/search?email=${email}`} className="text-blue-500 underline underline-offset-4">Back</Link>
         <Link href="/" className="text-blue-500 underline underline-offset-4">Home</Link>
       </div>
 
-      <h1 className="mt-8 text-3xl font-extrabold font-[family-name:var(--font-geist-mono)]">Earl</h1>
+      <h1 className="mt-8 text-3xl font-extrabold font-[family-name:var(--font-geist-mono)]">This Earl</h1>
 
       <div className="mt-8">
         <table className="table-auto">
@@ -61,7 +57,6 @@ export default async function URLStatsPage(props) {
           </div>
         )}
       </div>
-
 
       <div className="mt-8">
         <h2 className="font-bold">OS Stats</h2>

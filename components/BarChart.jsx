@@ -31,16 +31,16 @@ const BarChart = ({ data, backgroundColor, borderColor, borderWidth }) => {
         scales: {
           x: {
             grid: {
-              display: false, // Turn off grid lines for the x-axis
+              display: false,
             },
           },
           y: {
             ticks: {
-              stepSize: 1, // Ensure only integers appear
-              beginAtZero: true, // Ensure the y-axis starts at 0
+              stepSize: 1,
+              beginAtZero: true,
             },
             grid: {
-              display: false, // Turn off grid lines for the y-axis
+              display: false,
             },
           },
         },
