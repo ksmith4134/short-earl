@@ -1,0 +1,43 @@
+services:
+  app:
+    build: .
+    container_name: nextjs-app
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      BASE_URL: http://localhost:3000
+      LOCAL_DB_USER: postgres
+      LOCAL_DB_HOST: postgres-db
+      LOCAL_DB_NAME: short_earl
+      LOCAL_DB_PASSWORD: "123!@#"
+      LOCAL_DB_PORT: 5432
+    depends_on:
+      - db
+    networks:
+      - my_network
+
+  db:
+    image: postgres:16-alpine
+    container_name: postgres-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "123!@#"
+      POSTGRES_DB: short_earl
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - my_network
+
+volumes:
+  postgres_data:
+
+networks:
+  my_network:
+    name: my_network
+    driver: bridge

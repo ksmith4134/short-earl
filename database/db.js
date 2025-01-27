@@ -1,7 +1,7 @@
 const { Pool } = require('pg');
 const { config } = require('dotenv');
 
-config({ path: './.env.local' });
+config();
 
 
 let poolConfig;
