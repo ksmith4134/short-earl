@@ -31,15 +31,13 @@ export default function Home() {
   }
 
   return (
-    <div className="p-8 sm:p-16 font-[family-name:var(--font-geist-sans)]">
-      <main className="w-full max-w-sm">
+    <main className="p-8 sm:p-16 font-[family-name:var(--font-geist-sans)]">
+      <div className="w-full max-w-sm">
         <Link href="/search" className="text-blue-500 underline underline-offset-4">Search</Link>
         <h1 className="mt-8 text-3xl font-extrabold font-[family-name:var(--font-geist-mono)]">Short Earl</h1>
-        <p className="mt-2 text-sm text-">Enter a URL and click Submit to get your shortened URL.</p>
-        <p className="mt-2 text-sm text-">Add your email to monitor click tracking and user device information. Statistics can be tracked on the <strong><Link href="/search">Search</Link></strong> page.</p>
-        <p className="mt-2 text-sm text-"></p>
-        <form action={dispatch} className="mt-8 flex flex-col gap-2">
+        <p className="mt-4 text-md text-pretty">Enter a URL and click Submit below. Optionally add your email to enable click tracking and user device information. Statistics can be tracked on the <strong><Link href="/search">Search</Link></strong> page.</p>
 
+        <form action={dispatch} className="mt-10 flex flex-col gap-2">
           <div className="flex w-full flex-col">
             <label htmlFor="url" className="mb-1 text-xs font-bold">URL</label>
             <input required type="url" id="url" name="url" placeholder="Enter your URL" className="form-input rounded-lg border border-gray-300 p-3 text-sm shadow shadow-gray-100" />
@@ -61,10 +59,9 @@ export default function Home() {
           {isCopied && (
             <p className="text-sm">Copied to your clipboard!</p>
           )}
-
         </form>
 
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }

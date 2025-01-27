@@ -104,11 +104,30 @@ export async function getUrlStats(slugId) {
   try {
     // const result = await query(`SELECT logging_id, browser, os, device, cpu FROM logging WHERE slug_id = $1`, [slugId]);
 
+    // const result = await query(
+    //   `SELECT COUNT(*) AS total
+    //   FROM logging
+    //   WHERE slug_id = $1;`, 
+    //   [slugId]
+    // );
+
     const result = await query(
-      `SELECT COUNT(*) AS total
-      FROM logging
-      WHERE slug_id = $1;`, 
-      [slugId]
+        `SELECT 
+            s.url,
+            s.slug_hash,
+            COUNT(l.logging_id) AS total
+        FROM 
+            slugs AS s
+        LEFT JOIN 
+            logging AS l
+        ON 
+            s.slug_id = l.slug_id
+        WHERE 
+            s.slug_id = $1
+        GROUP BY 
+            s.url, s.slug_hash;
+        `, 
+        [slugId]
     );
 
 

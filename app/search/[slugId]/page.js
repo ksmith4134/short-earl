@@ -10,13 +10,15 @@ export default async function URLStatsPage(props) {
 
   const searchParams = await props.searchParams;
   const email = searchParams.email;
-  const hash = searchParams.hash;
-  const url = searchParams.url;
 
-  const [totalClicks, browserTotals, osTotals] = await Promise.all([getUrlStats(slugId), getBrowserTotals(slugId), getOsTotals(slugId)])
+  const [urlStats, browserTotals, osTotals] = await Promise.all([
+    getUrlStats(slugId), 
+    getBrowserTotals(slugId), 
+    getOsTotals(slugId)
+  ]);
 
   return (
-    <main className="p-8 sm:p-16 font-[family-name:var(--font-geist-sans)] max-w-xl">
+    <main className="p-8 sm:p-16 font-[family-name:var(--font-geist-sans)] max-w-2xl">
       <div className="flex gap-4">
         <Link href={`/search?email=${email}`} className="text-blue-500 underline underline-offset-4">Back</Link>
         <Link href="/" className="text-blue-500 underline underline-offset-4">Home</Link>
@@ -24,32 +26,30 @@ export default async function URLStatsPage(props) {
 
       <h1 className="mt-8 text-3xl font-extrabold font-[family-name:var(--font-geist-mono)]">This Earl</h1>
 
-      <div className="mt-8">
-        <table className="table-auto">
+      <div className="mt-6 text-sm">
+        <table className="table-auto border-collapse border border-slate-300 border-spacing-4">
           <tbody>
             <tr>
-              <td className="font-bold w-24">Email </td>
-              <td>{email}</td>
+              <td className="font-bold w-32 text-right align-top border border-slate-300 p-2">Email</td>
+              <td className="border border-slate-300 p-2">{email}</td>
             </tr>
             <tr>
-              <td className="font-bold">Real URL </td>
-              <td>{url}</td>
+              <td className="font-bold w-32 text-right align-top border border-slate-300 p-2">URL</td>
+              <td className="border border-slate-300 p-2">{urlStats[0].url}</td>
             </tr>
             <tr>
-              <td className="font-bold">Short URL </td>
-              <td>{process.env.BASE_URL}/{hash}</td>
+              <td className="font-bold w-32 text-right align-top border border-slate-300 p-2">Earl</td>
+              <td className="border border-slate-300 p-2">{process.env.BASE_URL}/{urlStats[0].slug_hash}</td>
+            </tr>
+            <tr>
+              <td className="font-bold w-32 text-right align-top border border-slate-300 p-2">Total Clicks</td>
+              <td className="border border-slate-300 p-2">{urlStats[0].total}</td>
             </tr>
           </tbody>
         </table>
-
       </div>
 
-      <div className="mt-8">
-        <h2 className="font-bold">Total Clicks</h2>
-        <p>{totalClicks[0].total}</p>
-      </div>
-
-      <div className="mt-8">
+      <div className="mt-12">
         <h2 className="font-bold">Browser Stats</h2>
         {browserTotals && (
           <div className="mt-4">
