@@ -9,7 +9,7 @@ export const UrlFormSchema = z.object({
     .optional()
 });
 
-export const searchEmailSchema = z.object({
+export const SearchEmailSchema = z.object({
   email: z
     .string()
     .trim()

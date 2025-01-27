@@ -9,7 +9,7 @@ const readline = require('node:readline');
 const { stdin: input, stdout: output } = require('node:process');
 const { query, getClient, closePool } = require('./db');
 
-config({ path: './.env.local' });
+config();
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getAllUserUrls } from "@/server/actions";
+import { getAllUserUrls } from "@/server/lib";
 import SearchForm from "@/components/SearchForm";
 import { FiBarChart } from "react-icons/fi";
 

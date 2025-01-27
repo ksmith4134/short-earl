@@ -1,4 +1,4 @@
-import { getUrlStats, getBrowserTotals, getOsTotals } from "@/server/actions";
+import { getUrlStats, getBrowserTotals, getOsTotals } from "@/server/lib";
 import Link from "next/link";
 import BarChart from "@/components/BarChart";
 import { BROWSER_BAR_CHART, OS_BAR_CHART } from "@/lib/theme";
